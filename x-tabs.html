@@ -1,0 +1,74 @@
+<template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      nav ul {
+        padding: 0;
+      }
+
+      nav ul li:hover {
+        cursor: pointer;
+      }
+
+      nav ul li {
+        display: inline-block;
+        padding: 0 1em;
+        margin: 0 0.2em 0 0;
+        background: lightblue;
+      }
+    </style>
+    <nav>
+      <ul></ul>
+    </nav>
+    <content select="x-tab"></content>
+</template>
+<script>
+  var Element = null;
+
+  (function(currentScript) {
+
+    var elemPrototype   = Object.create(HTMLDivElement.prototype);
+
+    // Private properties
+
+    // Public Properties
+
+    // Helpers
+
+    function toggleTab(index) {
+      return function() {
+        for(var i=0;i<this.tabs.length;i++) {
+          if(i === index) this.tabs[i].classList.add('active')
+          else this.tabs[i].classList.remove('active')
+        }
+      }
+    }
+
+    // Lifecycle callbacks
+
+    elemPrototype.createdCallback = function() {
+      this.root = this.createShadowRoot();
+      var tplContent = currentScript.ownerDocument.querySelector('template').content,
+          node       = document.importNode(tplContent, true);
+
+      this.root.appendChild(node);
+    };
+
+    elemPrototype.attachedCallback = function() {
+      this.tabs = this.root.querySelector('content').getDistributedNodes();
+      this.tabs[0].className = 'active';
+      var nav = this.root.querySelector('nav ul');
+      for(var i=0; i<this.tabs.length; i++) {
+        var item = document.createElement('li');
+        item.textContent = this.tabs[i].attributes.label && this.tabs[i].attributes.label.value
+        nav.appendChild(item);
+        item.addEventListener('click', toggleTab(i).bind(this))
+      }
+      console.log(this.tabs);
+    };
+
+    Element = document.registerElement('x-tabs', { prototype: elemPrototype });
+  }(document._currentScript || document.currentScript));
+</script>

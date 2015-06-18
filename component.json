@@ -1,0 +1,10 @@
+{
+  "name": "x-tabs",
+  "usage": "<x-tabs>\n\t<x-tab label=\"First Tab\">\n\t\tTab content\n\t</x-tab>\n</x-tabs>",
+  "description": "Tab box with tab navigation",
+  "links": {
+    "demo": "http://avgp.github.io/x-tabs/index.html",
+    "repository": "https://github.com/avgp/x-tabs",
+    "documentation": "https://github.com/AVGP/x-tabs/blob/gh-pages/README.md"
+  }
+}
