@@ -1,26 +1,26 @@
 <template>
     <style>
       :host {
-        display: block;
+        display: block
       }
 
       nav ul {
-        padding: 0;
+        padding: 0
       }
 
       nav ul li:hover {
-        cursor: pointer;
+        cursor: pointer
       }
 
       nav ul li {
-        display: inline-block;
-        padding: 0 1em;
-        margin: 0 0.2em 0 0;
-        background: lightgray;
+        display: inline-block
+        padding: 0 1em
+        margin: 0 0.2em 0 0
+        background: lightgray
       }
 
       nav ul li.active {
-        background: lightblue;
+        background: lightblue
       }
     </style>
     <nav>
@@ -29,11 +29,11 @@
     <content select="x-tab"></content>
 </template>
 <script>
-  var Element = null;
+  var Element = null
 
   (function(currentScript) {
 
-    var elemPrototype   = Object.create(HTMLDivElement.prototype);
+    var elemPrototype   = Object.create(HTMLDivElement.prototype)
 
     // Private properties
 
@@ -44,11 +44,11 @@
     function toggleTab(index) {
       return function(e) {
         var tabItems = this.root.querySelectorAll('nav ul li')
-        for(var i=0; i<tabItems.length; i++) {
+        for(var i=0 i<tabItems.length i++) {
           tabItems[i].classList.toggle('active')
         }
 
-        for(var i=0; i<this.tabs.length; i++) {
+        for(var i=0 i<this.tabs.length i++) {
           if(i === index) this.tabs[i].classList.add('active')
           else this.tabs[i].classList.remove('active')
         }
@@ -58,27 +58,27 @@
     // Lifecycle callbacks
 
     elemPrototype.createdCallback = function() {
-      this.root = this.createShadowRoot();
+      this.root = this.createShadowRoot()
       var tplContent = currentScript.ownerDocument.querySelector('template').content,
-          node       = document.importNode(tplContent, true);
+          node       = document.importNode(tplContent, true)
 
-      this.root.appendChild(node);
-    };
+      this.root.appendChild(node)
+    }
 
     elemPrototype.attachedCallback = function() {
-      this.tabs = this.root.querySelector('content').getDistributedNodes();
-      this.tabs[0].className = 'active';
-      var nav = this.root.querySelector('nav ul');
-      for(var i=0; i<this.tabs.length; i++) {
-        var item = document.createElement('li');
+      this.tabs = this.root.querySelector('content').getDistributedNodes()
+      this.tabs[0].className = 'active'
+      var nav = this.root.querySelector('nav ul')
+      for(var i=0 i<this.tabs.length i++) {
+        var item = document.createElement('li')
         if(i === 0) item.classList.add('active')
         item.textContent = this.tabs[i].attributes.label && this.tabs[i].attributes.label.value
-        nav.appendChild(item);
+        nav.appendChild(item)
         item.addEventListener('click', toggleTab(i).bind(this))
       }
-      console.log(this.tabs);
-    };
+      console.log(this.tabs)
+    }
 
-    Element = document.registerElement('x-tabs', { prototype: elemPrototype });
-  }(document._currentScript || document.currentScript));
+    Element = document.registerElement('x-tabs', { prototype: elemPrototype })
+  }(document._currentScript || document.currentScript))
 </script>
