@@ -16,6 +16,10 @@
         display: inline-block;
         padding: 0 1em;
         margin: 0 0.2em 0 0;
+        background: lightgray;
+      }
+
+      nav ul li.active {
         background: lightblue;
       }
     </style>
@@ -38,8 +42,13 @@
     // Helpers
 
     function toggleTab(index) {
-      return function() {
-        for(var i=0;i<this.tabs.length;i++) {
+      return function(e) {
+        var tabItems = this.root.querySelectorAll('nav ul li')
+        for(var i=0; i<tabItems.length; i++) {
+          tabItems[i].classList.toggle('active')
+        }
+
+        for(var i=0; i<this.tabs.length; i++) {
           if(i === index) this.tabs[i].classList.add('active')
           else this.tabs[i].classList.remove('active')
         }
@@ -62,6 +71,7 @@
       var nav = this.root.querySelector('nav ul');
       for(var i=0; i<this.tabs.length; i++) {
         var item = document.createElement('li');
+        if(i === 0) item.classList.add('active')
         item.textContent = this.tabs[i].attributes.label && this.tabs[i].attributes.label.value
         nav.appendChild(item);
         item.addEventListener('click', toggleTab(i).bind(this))
