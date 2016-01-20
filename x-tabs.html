@@ -24,7 +24,7 @@
       }
     </style>
     <nav>
-      <ul></ul>
+      <ul role="tablist"></ul>
     </nav>
     <content select="x-tab"></content>
 </template>
@@ -67,16 +67,48 @@
 
     elemPrototype.attachedCallback = function() {
       this.tabs = this.root.querySelector('content').getDistributedNodes()
-      this.tabs[0].className = 'active'
       var nav = this.root.querySelector('nav ul')
+
+      var validTabIds = [], currentSelectedPosition = 0
+
       for(var i=0; i<this.tabs.length; i++) {
+        var tabId = this.tabs[i].attributes.id && this.tabs[i].attributes.id.value
+        if(tabId) validTabIds.push(tabId)
+
         var item = document.createElement('li')
-        if(i === 0) item.classList.add('active')
-        item.textContent = this.tabs[i].attributes.label && this.tabs[i].attributes.label.value
+        var link = document.createElement('a')
+        link.href= "#" + tabId
+        link.textContent = this.tabs[i].attributes.label && this.tabs[i].attributes.label.value
+        item.appendChild(link)
+
         nav.appendChild(item)
         item.addEventListener('click', toggleTab(i).bind(this))
+        item.role = 'tab'
       }
-      console.log(this.tabs)
+
+      if(validTabIds.indexOf(window.location.hash.substr(1)) > -1) {
+        var position = validTabIds.indexOf(window.location.hash.substr(1))
+        nav.querySelectorAll('li')[position].classList.add('active')
+        this.tabs[position].classList.add('active')
+        currentSelectedPosition = position
+      } else {
+        nav.querySelector('li:first').classList.add('active')
+        this.tabs[0].classList.add('active')
+      }
+
+      var self = this
+      window.addEventListener('hashchange', function() {
+        console.log('hc', window.location.hash.substr(1), validTabIds.indexOf(window.location.hash.substr(1)))
+        if(validTabIds.indexOf(window.location.hash.substr(1)) > -1) {
+          nav.querySelectorAll('li')[currentSelectedPosition].classList.remove('active')
+          self.tabs[currentSelectedPosition].classList.remove('active')
+
+          var position = validTabIds.indexOf(window.location.hash.substr(1))
+          nav.querySelectorAll('li')[position].classList.add('active')
+          self.tabs[position].classList.add('active')
+          currentSelectedPosition = position
+        }
+      })
     }
 
     Element = document.registerElement('x-tabs', { prototype: elemPrototype })
